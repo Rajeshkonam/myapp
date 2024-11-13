@@ -1,23 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import "./App.css";
+import TodoApp from "./TodoApp";
+import Login from "./Login";
 
+
+//rajesh
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Check for authentication status in localStorage on mount
+  useEffect(() => {
+    const loggedInStatus = JSON.parse(localStorage.getItem("isAuthenticated"));
+    if (loggedInStatus) {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  // Function to handle successful login
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+    localStorage.setItem("isAuthenticated", JSON.stringify(true));
+  };
+
+  // Function to handle logout
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem("isAuthenticated");
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {isAuthenticated ? (
+        <TodoApp onLogout={handleLogout} />
+      ) : (
+        <Login onLogin={handleLogin} />
+      )}
     </div>
   );
 }
